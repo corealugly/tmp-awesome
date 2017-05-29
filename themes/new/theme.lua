@@ -15,7 +15,8 @@ local os    = { getenv = os.getenv }
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-dark"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
-theme.font                                      = "xos4 Terminus 9"
+theme.fontSize                                  = 12
+theme.font                                      = "Liberation Mono" .. " " .. theme.fontSize
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
@@ -102,7 +103,7 @@ local clock = awful.widget.watch(
 theme.cal = lain.widget.calendar({
     attach_to = { clock.widget },
     notification_preset = {
-        font = "xos4 Terminus 10",
+        font = theme.font,
         fg   = theme.fg_normal,
         bg   = theme.bg_normal
     }
@@ -130,8 +131,9 @@ local mail = lain.widget.imap({
 --]]
 
 -- MPD
+local musicplr = ncmpcpp
 local mpdicon = wibox.widget.imagebox(theme.widget_music)
-mpdicon:buttons(awful.util.table.join(awful.button({ }, 1, function () awful.spawn_with_shell(musicplr) end)))
+mpdicon:buttons(awful.util.table.join(awful.button({ }, 1, function () awful.util.spawn_with_shell(musicplr) end)))
 theme.mpd = lain.widget.mpd({
     settings = function()
         if mpd_now.state == "play" then
@@ -315,10 +317,10 @@ function theme.at_screen_connect(s)
             arrl_dl,
             baticon,
             bat.widget,
-            arrl_ld,
-            wibox.container.background(neticon, theme.bg_focus),
-            wibox.container.background(net.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_ld,
+            --wibox.container.background(neticon, theme.bg_focus),
+            --wibox.container.background(net.widget, theme.bg_focus),
+            --arrl_dl,
             clock,
             spr,
             arrl_ld,

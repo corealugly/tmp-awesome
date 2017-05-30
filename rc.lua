@@ -57,6 +57,7 @@ end
 
 run_once({ "urxvtd", "unclutter -root" })
 run_once({ "kbdd", "setxkbmap -layout us,ru -variant -option  grp:alt_shift_toggle, terminate:ctrl_alt_bksp" })
+run_once({ "nm-applet" })
 -- }}}
 
 -- {{{ Variable definitions

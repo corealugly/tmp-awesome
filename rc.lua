@@ -301,7 +301,8 @@ globalkeys = awful.util.table.join(
     -- Show/Hide Wibox
     awful.key({ modkey }, "b", function ()
         for s in screen do
-            s.mywibox.visible = not s.mywibox.visible
+            s.mywiboxTop.visible = not s.mywiboxTop.visible
+            s.mywiboxBottom.visible = not s.mywiboxBottom.visible
             if s.mybottomwibox then
                 s.mybottomwibox.visible = not s.mybottomwibox.visible
             end

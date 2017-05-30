@@ -131,7 +131,7 @@ local mail = lain.widget.imap({
 --]]
 
 -- MPD
-local musicplr = ncmpcpp
+--local musicplr = "ncmpcpp"
 local mpdicon = wibox.widget.imagebox(theme.widget_music)
 mpdicon:buttons(awful.util.table.join(awful.button({ }, 1, function () awful.util.spawn_with_shell(musicplr) end)))
 theme.mpd = lain.widget.mpd({
@@ -180,8 +180,8 @@ local temp = lain.widget.temp({
 -- / fs
 local fsicon = wibox.widget.imagebox(theme.widget_hdd)
 theme.fs = lain.widget.fs({
-    options  = "--exclude-type=tmpfs",
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "xos4 Terminus 10" },
+    options  = "--exclude-type=tmpfs --exclude-type=devtmpfs",
+    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Liberation Mono 9" },
     settings = function()
         widget:set_markup(markup.font(theme.font, " " .. fs_now.used .. "% "))
     end
@@ -276,31 +276,31 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mywiboxTop = awful.wibar({ position = "top", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
 
     -- Add widgets to the wibox
-    s.mywibox:setup {
+    s.mywiboxTop:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            --spr,
+            spr,
             s.mytaglist,
             s.mypromptbox,
             spr,
-        },
-        s.mytasklist, -- Middle widget
+        }, 
+            spr,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-            spr,
+            --spr,
+            --arrl_ld,
+            --wibox.container.background(mpdicon, theme.bg_focus),
+            --wibox.container.background(theme.mpd.widget, theme.bg_focus),
             arrl_ld,
-            wibox.container.background(mpdicon, theme.bg_focus),
-            wibox.container.background(theme.mpd.widget, theme.bg_focus),
-            arrl_dl,
-            volicon,
-            theme.volume.widget,
-            arrl_ld,
-            wibox.container.background(mailicon, theme.bg_focus),
+            wibox.container.background(volicon,theme.bg_focus),
+            wibox.container.background(theme.volume.widget,theme.bg_focus),
+            --arrl_ld,
+            --wibox.container.background(mailicon, theme.bg_focus),
             --wibox.container.background(mail.widget, theme.bg_focus),
             arrl_dl,
             memicon,
@@ -321,11 +321,18 @@ function theme.at_screen_connect(s)
             --wibox.container.background(neticon, theme.bg_focus),
             --wibox.container.background(net.widget, theme.bg_focus),
             --arrl_dl,
-            clock,
             spr,
             arrl_ld,
+            wibox.container.background(clock, theme.bg_focus),
             wibox.container.background(s.mylayoutbox, theme.bg_focus),
         },
+    }
+
+    s.mywiboxBottom = awful.wibar({ position = "bottom", screen = s, height = 18, bg = theme.bg_normal, fg = theme.fg_normal })
+
+    s.mywiboxBottom:setup {
+        layout = wibox.layout.align.horizontal,
+        s.mytasklist, -- Middle widget
     }
 end
 

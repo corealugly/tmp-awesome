@@ -211,6 +211,21 @@ local bat = lain.widget.bat({
     end
 })
 
+-- keyboard layout
+kbdwidget = wibox.widget.textbox()
+kbdwidget:set_markup(markup.font(theme.font," ENG "))
+
+dbus.request_name("session", "ru.gentoo.kbdd")
+dbus.add_match("session", "interface='ru.gentoo.kbdd',member='layoutChanged'")
+dbus.connect_signal("ru.gentoo.kbdd", function(...)
+    local data = {...}
+    local layout = data[2]
+    lts = {[0] = "ENG", [1] = "RUS"}
+    kbdwidget:set_markup(markup.font(theme.font," "..lts[layout].." "))
+    end
+)
+
+
 -- ALSA volume
 local volicon = wibox.widget.imagebox(theme.widget_vol)
 theme.volume = lain.widget.alsa({
@@ -296,6 +311,7 @@ function theme.at_screen_connect(s)
             --arrl_ld,
             --wibox.container.background(mpdicon, theme.bg_focus),
             --wibox.container.background(theme.mpd.widget, theme.bg_focus),
+			kbdwidget,
             arrl_ld,
             wibox.container.background(volicon,theme.bg_focus),
             wibox.container.background(theme.volume.widget,theme.bg_focus),

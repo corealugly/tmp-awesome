@@ -56,6 +56,7 @@ local function run_once(cmd_arr)
 end
 
 run_once({ "urxvtd", "unclutter -root" })
+run_once({ "kbdd", "setxkbmap -layout us,ru -variant -option  grp:alt_shift_toggle, terminate:ctrl_alt_bksp" })
 -- }}}
 
 -- {{{ Variable definitions

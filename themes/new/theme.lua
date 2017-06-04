@@ -8,6 +8,7 @@
 
 local gears = require("gears")
 local lain  = require("lain")
+local cau  = require("cau")
 local awful = require("awful")
 local wibox = require("wibox")
 local os    = { getenv = os.getenv }
@@ -225,24 +226,51 @@ dbus.connect_signal("ru.gentoo.kbdd", function(...)
     end
 )
 
-
--- ALSA volume
+-- pulse volume widget
 local volicon = wibox.widget.imagebox(theme.widget_vol)
-theme.volume = lain.widget.alsa({
+theme.volume = cau.widget.pulseaudio({
     settings = function()
-        if volume_now.status == "off" then
-            volicon:set_image(theme.widget_vol_mute)
-        elseif tonumber(volume_now.level) == 0 then
-            volicon:set_image(theme.widget_vol_no)
-        elseif tonumber(volume_now.level) <= 50 then
-            volicon:set_image(theme.widget_vol_low)
-        else
-            volicon:set_image(theme.widget_vol)
-        end
+   		--vlevel = volume_now.left .. "-" .. volume_now.right .. "% | " .. volume_now.sink
+        --if volume_now.muted == "yes" then
+        --    vlevel = vlevel .. " M"
+        --end
 
-        widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
+		if volume_now.muted == "yes" then
+	            volicon:set_image(theme.widget_vol_mute)
+	        elseif tonumber(volume_now.left) == 0 then
+	            volicon:set_image(theme.widget_vol_no)
+	        elseif tonumber(volume_now.left) <= 50 then
+	            volicon:set_image(theme.widget_vol_low)
+	        else
+	            volicon:set_image(theme.widget_vol)
+	        end
+		--widget:set_markup(markup.font(theme.font, " " .. vlevel .. " "))
+		widget:set_markup(markup.font(theme.font, " " .. volume_now.left .. "% "))
     end
 })
+
+-- PulseAudio volume control button
+theme.volume.widget:buttons(awful.util.table.join(
+    awful.button({}, 1, function() -- left click
+        awful.spawn("pavucontrol")
+    end),
+    awful.button({}, 2, function() -- middle click
+        awful.spawn(string.format("pactl set-sink-volume %d 100%%", volume_now.index))
+        theme.volume.update()
+    end),
+    awful.button({}, 3, function() -- right click
+        awful.spawn(string.format("pactl set-sink-mute %d toggle", volume_now.index))
+        theme.volume.update()
+    end),
+    awful.button({}, 4, function() -- scroll up
+        awful.spawn(string.format("pactl set-sink-volume %d +1%%", volume_now.index))
+        theme.volume.update()
+    end),
+    awful.button({}, 5, function() -- scroll down
+        awful.spawn(string.format("pactl set-sink-volume %d -1%%", volume_now.index))
+        theme.volume.update()
+    end)
+))
 
 -- Net
 local neticon = wibox.widget.imagebox(theme.widget_net)

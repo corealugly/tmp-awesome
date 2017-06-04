@@ -20,6 +20,7 @@ local lain          = require("lain")
 --local menubar       = require("menubar")
 local freedesktop   = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+local xrandr = require("xrandr/xrandr")
 -- }}}
 
 -- {{{ Error handling
@@ -76,12 +77,13 @@ local chosen_theme = "new"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "urxvtc" or "xterm"
-local editor       = os.getenv("EDITOR") or "nano" or "vi"
+local editor       = os.getenv("EDITOR") or "vi"
 local gui_editor   = "gvim"
 local browser      = "firefox"
 
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
+
 awful.layout.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
@@ -106,6 +108,7 @@ awful.layout.layouts = {
     --lain.layout.termfair,
     --lain.layout.termfair.center,
 }
+
 awful.util.taglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
@@ -122,6 +125,7 @@ awful.util.taglist_buttons = awful.util.table.join(
                     awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
                     awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
                 )
+
 awful.util.tasklist_buttons = awful.util.table.join(
                      awful.button({ }, 1, function (c)
                                               if c == client.focus then
@@ -222,8 +226,9 @@ root.buttons(awful.util.table.join(
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     -- Take a screenshot
-    -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p", function() os.execute("screenshot") end),
+    
+    awful.key({ modkey, "Shift" }, "o", function() xrandr.xrandr() end),
 
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -366,32 +371,61 @@ globalkeys = awful.util.table.join(
     awful.key({ altkey, }, "h", function () if beautiful.fs then beautiful.fs.show(7) end end),
     awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end),
 
+	-------------------------------
+	-- PulseAudio volume control --
+    -------------------------------
+	awful.key({ altkey }, "Up",
+    	function ()
+        	os.execute(string.format("pactl set-sink-volume %d +1%%", volume_now.index ))
+        	beautiful.volume.update()
+    	end),
+	awful.key({ altkey }, "Down",
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d -1%%", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),
+	awful.key({ altkey }, "m",
+    	function ()
+    	    os.execute(string.format("pactl set-sink-mute %d toggle", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),
+	awful.key({ altkey, "Control" }, "m",
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d 100%%", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),
+	awful.key({ altkey, "Control" }, "0",
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d 0%%", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),   
+ 
     -- ALSA volume control
-    awful.key({ altkey }, "Up",
-        function ()
-            os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
-            beautiful.volume.update()
-        end),
-    awful.key({ altkey }, "Down",
-        function ()
-            os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
-            beautiful.volume.update()
-        end),
-    awful.key({ altkey }, "m",
-        function ()
-            os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
-            beautiful.volume.update()
-        end),
-    awful.key({ altkey, "Control" }, "m",
-        function ()
-            os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
-            beautiful.volume.update()
-        end),
-    awful.key({ altkey, "Control" }, "0",
-        function ()
-            os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
-            beautiful.volume.update()
-        end),
+    --awful.key({ altkey }, "Up",
+    --    function ()
+    --        os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
+    --        beautiful.volume.update()
+    --    end),
+    --awful.key({ altkey }, "Down",
+    --    function ()
+    --        os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
+    --        beautiful.volume.update()
+    --    end),
+    --awful.key({ altkey }, "m",
+    --    function ()
+    --        os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
+    --        beautiful.volume.update()
+    --    end),
+    --awful.key({ altkey, "Control" }, "m",
+    --    function ()
+    --        os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
+    --        beautiful.volume.update()
+    --    end),
+    --awful.key({ altkey, "Control" }, "0",
+    --    function ()
+    --        os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
+    --        beautiful.volume.update()
+    --    end),
 
     -- MPD control
     awful.key({ altkey, "Control" }, "Up",

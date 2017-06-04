@@ -113,7 +113,7 @@ local function factory(args)
 
     if showpopup == "on" then
        fs.widget:connect_signal('mouse::enter', function () fs.show(0) end)
-       fs.widget:connect_signal('mouse::leave', function () fs.hide() end)
+       fs.widget:connect_signal('mouse::leave', function () fs.hide(0) end)
     end
 
     helpers.newtimer(partition, timeout, fs.update)

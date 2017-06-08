@@ -1,3 +1,9 @@
+#help
+xev          --> key code
+xmodmap -pke --> key code
+xmodmap      --> key code
+
 #programm list
 pcmanfm --> file manager
 scrot   --> screenshot
+xbacklight  --> Brightness

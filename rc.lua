@@ -76,10 +76,22 @@ local chosen_theme = "new"
 
 local modkey       = "Mod4"
 local altkey       = "Mod1"
+local fn           = "#151"
 local terminal     = "urxvtc" or "xterm"
 local editor       = os.getenv("EDITOR") or "vi"
 local gui_editor   = "gvim"
 local browser      = "firefox"
+
+local key_play       = "#171"
+local key_move_right = "#172"
+local key_move_left  = "#173"
+local key_sleep      = "#150"
+local key_Mute       = "#121"
+local key_Vol_Down   = "#122"
+local key_Vol_Up     = "#123"
+
+local key_Brightness_Up = "#233"
+local key_Brightness_Down = "#232"
 
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
@@ -304,8 +316,9 @@ globalkeys = awful.util.table.join(
             end
         end,
         {description = "go back", group = "client"}),
-
-    -- Show/Hide Wibox
+    ---------------------
+    -- Show/Hide Wibox --
+    ---------------------
     awful.key({ modkey }, "b", function ()
         for s in screen do
             s.mywiboxTop.visible = not s.mywiboxTop.visible
@@ -374,32 +387,58 @@ globalkeys = awful.util.table.join(
 	-------------------------------
 	-- PulseAudio volume control --
     -------------------------------
-	awful.key({ altkey }, "Up",
-    	function ()
-        	os.execute(string.format("pactl set-sink-volume %d +1%%", volume_now.index ))
-        	beautiful.volume.update()
-    	end),
-	awful.key({ altkey }, "Down",
-    	function ()
-    	    os.execute(string.format("pactl set-sink-volume %d -1%%", volume_now.index ))
-    	    beautiful.volume.update()
-    	end),
-	awful.key({ altkey }, "m",
+    --KEYBOARD
+	awful.key({ modkey }, "F1",
     	function ()
     	    os.execute(string.format("pactl set-sink-mute %d toggle", volume_now.index ))
     	    beautiful.volume.update()
     	end),
-	awful.key({ altkey, "Control" }, "m",
+    awful.key({ modkey }, "F2",
     	function ()
-    	    os.execute(string.format("pactl set-sink-volume %d 100%%", volume_now.index ))
+        	os.execute(string.format("pactl set-sink-volume %d -1%%", volume_now.index ))
+        	beautiful.volume.update()
+    	end),
+	awful.key({ modkey }, "F3",
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d +1%%", volume_now.index ))
     	    beautiful.volume.update()
     	end),
-	awful.key({ altkey, "Control" }, "0",
+   ------------------------
+   -- MEDIA and NOTEBOOK --
+   ------------------------
+   awful.key({ }, key_Mute,
     	function ()
-    	    os.execute(string.format("pactl set-sink-volume %d 0%%", volume_now.index ))
+    	    os.execute(string.format("pactl set-sink-mute %d toggle", volume_now.index ))
     	    beautiful.volume.update()
-    	end),   
- 
+    	end),
+   awful.key({  }, key_Vol_Up,
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d +2%%", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),
+   awful.key({  }, key_Vol_Down,
+    	function ()
+    	    os.execute(string.format("pactl set-sink-volume %d -2%%", volume_now.index ))
+    	    beautiful.volume.update()
+    	end),
+
+    --NOTEBOOK
+	--awful.key({ fn }, "F1",
+    --	function ()
+    --	    os.execute(string.format("pactl set-sink-mute %d toggle", volume_now.index ))
+    --	    beautiful.volume.update()
+    --	end),
+    --awful.key({ fn }, "F2",
+    --	function ()
+    --    	os.execute(string.format("pactl set-sink-volume %d -1%%", volume_now.index ))
+    --    	beautiful.volume.update()
+    --	end),
+	--awful.key({ fn }, "F3",
+    --	function ()
+    --	    os.execute(string.format("pactl set-sink-volume %d +1%%", volume_now.index ))
+    --	    beautiful.volume.update()
+    --	end),
+
     -- ALSA volume control
     --awful.key({ altkey }, "Up",
     --    function ()
@@ -426,6 +465,25 @@ globalkeys = awful.util.table.join(
     --        os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
     --        beautiful.volume.update()
     --    end),
+
+    -- Brightness --
+    awful.key({ modkey }, "F5",
+        function ()
+            awful.util.spawn("xbacklight -dec 10")
+        end),
+    awful.key({ modkey }, "F6",
+        function ()
+            awful.util.spawn("xbacklight -inc 10")
+        end),
+    -- Brightness for notebook FN --  
+    awful.key({  }, key_Brightness_Down,
+        function ()
+            awful.util.spawn("xbacklight -dec 10")
+        end),
+    awful.key({  }, key_Brightness_Up,
+        function ()
+            awful.util.spawn("xbacklight -inc 10")
+        end),
 
     -- MPD control
     awful.key({ altkey, "Control" }, "Up",
@@ -482,7 +540,7 @@ globalkeys = awful.util.table.join(
 		end)
     --]]
     -- Prompt
-    awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
+    awful.key({ altkey }, "F2", function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),
 
     awful.key({ modkey }, "x",

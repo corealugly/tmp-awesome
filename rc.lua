@@ -59,6 +59,7 @@ end
 run_once({ "urxvtd", "unclutter -root" })
 run_once({ "kbdd", "setxkbmap -layout us,ru -variant -option  grp:alt_shift_toggle, terminate:ctrl_alt_bksp" })
 run_once({ "nm-applet" })
+run_once({ "pulseaudio --start -D" })
 -- }}}
 
 -- {{{ Variable definitions
@@ -406,17 +407,17 @@ globalkeys = awful.util.table.join(
    ------------------------
    -- MEDIA and NOTEBOOK --
    ------------------------
-   awful.key({ }, key_Mute,
+    awful.key({ }, key_Mute,
     	function ()
     	    os.execute(string.format("pactl set-sink-mute %d toggle", volume_now.index ))
     	    beautiful.volume.update()
     	end),
-   awful.key({  }, key_Vol_Up,
+    awful.key({  }, key_Vol_Up,
     	function ()
     	    os.execute(string.format("pactl set-sink-volume %d +2%%", volume_now.index ))
     	    beautiful.volume.update()
     	end),
-   awful.key({  }, key_Vol_Down,
+    awful.key({  }, key_Vol_Down,
     	function ()
     	    os.execute(string.format("pactl set-sink-volume %d -2%%", volume_now.index ))
     	    beautiful.volume.update()

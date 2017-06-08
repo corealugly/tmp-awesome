@@ -7,3 +7,12 @@ xmodmap      --> key code
 pcmanfm --> file manager
 scrot   --> screenshot
 xbacklight  --> Brightness
+
+
+#other
+hamster-indicator
+
+
+
+#link
+http://pavelmakhov.com/2015/12/email-widget-for-awesome-wm

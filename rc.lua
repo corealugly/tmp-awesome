@@ -60,6 +60,7 @@ run_once({ "urxvtd", "unclutter -root" })
 run_once({ "kbdd", "setxkbmap -layout us,ru -variant -option  grp:alt_shift_toggle, terminate:ctrl_alt_bksp" })
 run_once({ "nm-applet" })
 run_once({ "pulseaudio --start -D" })
+run_once({ "xautolock -time 10 -locker lock" })
 -- }}}
 
 -- {{{ Variable definitions
@@ -80,7 +81,7 @@ local altkey       = "Mod1"
 local fn           = "#151"
 local terminal     = "urxvtc" or "xterm"
 local editor       = os.getenv("EDITOR") or "vi"
-local gui_editor   = "gvim"
+local gui_editor   = "atom" or "gvim"
 local browser      = "firefox"
 
 local key_play       = "#171"
@@ -94,32 +95,35 @@ local key_Vol_Up     = "#123"
 local key_Brightness_Up = "#233"
 local key_Brightness_Down = "#232"
 
+local key_Tile_Next = "#128"
+local key_Tile_Prev = "#152"
+
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
 
 awful.layout.layouts = {
-    awful.layout.suit.floating,
-    awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
-    --awful.layout.suit.fair,
-    --awful.layout.suit.fair.horizontal,
-    --awful.layout.suit.spiral,
-    --awful.layout.suit.spiral.dwindle,
-    --awful.layout.suit.max,
-    --awful.layout.suit.max.fullscreen,
-    --awful.layout.suit.magnifier,
-    --awful.layout.suit.corner.nw,
-    --awful.layout.suit.corner.ne,
-    --awful.layout.suit.corner.sw,
-    --awful.layout.suit.corner.se,
-    --lain.layout.cascade,
-    --lain.layout.cascade.tile,
-    --lain.layout.centerwork,
-    --lain.layout.centerwork.horizontal,
-    --lain.layout.termfair,
-    --lain.layout.termfair.center,
+    awful.layout.suit.floating, --!
+    awful.layout.suit.tile, --!
+    awful.layout.suit.tile.left, 
+    awful.layout.suit.tile.bottom, --!
+    awful.layout.suit.tile.top, --!
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal,
+    awful.layout.suit.spiral,  ---
+    awful.layout.suit.spiral.dwindle,---
+    awful.layout.suit.max, ---
+    awful.layout.suit.max.fullscreen, ---
+    awful.layout.suit.magnifier,  ---
+    awful.layout.suit.corner.nw,     --!
+    awful.layout.suit.corner.ne,  ---
+    awful.layout.suit.corner.sw,  ---
+    awful.layout.suit.corner.se,  ---
+    lain.layout.cascade,    --!-
+    lain.layout.cascade.tile, ---
+    lain.layout.centerwork,     --!
+    lain.layout.centerwork.horizontal, --!
+    lain.layout.termfair,  --!
+    lain.layout.termfair.center,  --!-
 }
 
 awful.util.taglist_buttons = awful.util.table.join(
@@ -476,7 +480,9 @@ globalkeys = awful.util.table.join(
         function ()
             awful.util.spawn("xbacklight -inc 10")
         end),
-    -- Brightness for notebook FN --  
+    --------------------------------
+    -- Brightness for notebook FN --
+    --------------------------------
     awful.key({  }, key_Brightness_Down,
         function ()
             awful.util.spawn("xbacklight -dec 10")

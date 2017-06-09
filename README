@@ -8,6 +8,13 @@ pcmanfm --> file manager
 scrot   --> screenshot
 xbacklight  --> Brightness
 
+#lock
+i3lock
+scrot
+imagemagick
+xautolock
+
+
 
 #other
 hamster-indicator

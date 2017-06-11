@@ -16,6 +16,7 @@ local awful_menu = require("awful.menu")
 local menu_gen   = require("menubar.menu_gen")
 local menu_utils = require("menubar.utils")
 local icon_theme = require("menubar.icon_theme")
+local awful_util = require("awful.util")
 
 local os         = { execute = os.execute,
                      getenv  = os.getenv }
@@ -32,9 +33,9 @@ table.insert(menu_gen.all_menu_dirs, string.format("%s/.nix-profile/share/applic
 -- Remove non existent paths in order to avoid issues
 local existent_paths = {}
 for k,v in pairs(menu_gen.all_menu_dirs) do
-    if os.execute(string.format("ls %s &> /dev/null", v)) then
-        table.insert(existent_paths, v)
-    end
+	if awful_util.dir_readable(v) then
+       	table.insert(existent_paths, v)
+	end
 end
 menu_gen.all_menu_dirs = existent_paths
 

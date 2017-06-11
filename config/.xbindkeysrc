@@ -1,0 +1,35 @@
+# ALT SHIFT 
+# 10 up
+"xdotool mousemove_relative --sync -- 0 -10"
+m:0x9 + c:25
+Shift+Alt_R + w
+
+# ALT SHIFT S
+# 10 down
+"xdotool mousemove_relative --sync -- 0 10"
+m:0x9 + c:39
+Shift+Alt_R + s
+
+# ALT SHIFT A
+# 10 left
+"xdotool mousemove_relative --sync -- -10 0"
+m:0x9 + c:38
+Shift+Alt_R + a
+
+# ALT SHIFT D
+# 10 right
+"xdotool mousemove_relative --sync -- 10 0"
+m:0x9 + c:40
+Shift+Alt_R + d
+
+# ALT SHIFT Q
+# left click
+#"sleep 1 && xdotool click 1"
+"xdotool click 1"
+Shift+Alt_R + q
+
+# ALT SHIFT E
+# right click
+#"sleep 1 && xdotool click 3"
+"xdotool click 3"
+Shift+Alt_R + e

@@ -23,7 +23,9 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local xrandr = require("xrandr/xrandr")
 -- }}}
 
--- {{{ Error handling
+--------------------
+-- Error handling --
+--------------------
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
                      title = "Oops, there were errors during startup!",
@@ -42,9 +44,10 @@ do
         in_error = false
     end)
 end
--- }}}
 
--- {{{ Autostart windowless processes
+------------------------------------
+-- Autostart windowless processes --
+------------------------------------
 local function run_once(cmd_arr)
     for _, cmd in ipairs(cmd_arr) do
         findme = cmd
@@ -56,12 +59,12 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "urxvtd", "unclutter -root" })
+run_once({ "pulseaudio --start -D" })
 run_once({ "kbdd", "setxkbmap -layout us,ru -variant -option  grp:alt_shift_toggle, terminate:ctrl_alt_bksp" })
 run_once({ "nm-applet" })
-run_once({ "pulseaudio --start -D" })
-run_once({ "xautolock -time 10 -locker lock" })
--- }}}
+run_once({ "urxvtd", "unclutter -root" })
+--run_once({ "xautolock -time 5 -locker /bin/lock -notify 30 -notifier \"notify-send -u critical -t 10000 -- 'LOCKING screen in 30 seconds'\" " })
+run_once({ "xautolock -time 5 -locker /bin/lock" })
 
 -- {{{ Variable definitions
 --local chosen_theme = "blackburn"
@@ -79,15 +82,16 @@ local chosen_theme = "new"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local fn           = "#151"
-local terminal     = "urxvtc" or "xterm"
+local terminal     = "urxvtc" or "terminator" or "xterm"
 local editor       = os.getenv("EDITOR") or "vi"
 local gui_editor   = "atom" or "gvim"
-local browser      = "firefox"
+local browser      = "chromium-browser" or "firefox"
 
 local key_play       = "#171"
 local key_move_right = "#172"
 local key_move_left  = "#173"
 local key_sleep      = "#150"
+
 local key_Mute       = "#121"
 local key_Vol_Down   = "#122"
 local key_Vol_Up     = "#123"
@@ -95,8 +99,11 @@ local key_Vol_Up     = "#123"
 local key_Brightness_Up = "#233"
 local key_Brightness_Down = "#232"
 
+-- change laytout key
 local key_Tile_Next = "#128"
 local key_Tile_Prev = "#152"
+local key_Tile_Next_F11 = "#95"
+local key_Tile_Prev_F12 = "#96"
 
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5" }
@@ -109,17 +116,17 @@ awful.layout.layouts = {
     awful.layout.suit.tile.top, --!
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,  ---
-    awful.layout.suit.spiral.dwindle,---
-    awful.layout.suit.max, ---
-    awful.layout.suit.max.fullscreen, ---
-    awful.layout.suit.magnifier,  ---
+    --awful.layout.suit.spiral,  ---
+    --awful.layout.suit.spiral.dwindle,---
+    --awful.layout.suit.max, ---
+    --awful.layout.suit.max.fullscreen, ---
+    --awful.layout.suit.magnifier,  ---
     awful.layout.suit.corner.nw,     --!
-    awful.layout.suit.corner.ne,  ---
-    awful.layout.suit.corner.sw,  ---
-    awful.layout.suit.corner.se,  ---
-    lain.layout.cascade,    --!-
-    lain.layout.cascade.tile, ---
+    --awful.layout.suit.corner.ne,  ---
+    --awful.layout.suit.corner.sw,  ---
+    --awful.layout.suit.corner.se,  ---
+    --lain.layout.cascade,    --!-
+    --lain.layout.cascade.tile, ---
     lain.layout.centerwork,     --!
     lain.layout.centerwork.horizontal, --!
     lain.layout.termfair,  --!
@@ -365,10 +372,28 @@ globalkeys = awful.util.table.join(
               {description = "increase the number of columns", group = "layout"}),
     awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
               {description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    ----------------------
+    -- change layout FN --??????
+    ----------------------
+    awful.key({ }, key_Tile_Next, function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    awful.key({ }, key_Tile_Prev, function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
+
+    ----------------------------
+    -- change layout Keyboard --
+    ----------------------------
+    awful.key({ modkey }, key_Tile_Next_F11, function () awful.layout.inc( 1)                end,
+              {description = "select next", group = "layout"}),
+    awful.key({ modkey }, key_Tile_Prev_F12, function () awful.layout.inc(-1)                end,
+              {description = "select previous", group = "layout"}),
+
+    -----------------
+    -- screen lock --
+    -----------------
+    awful.key({ altkey, "Control" }, "l", function () awful.spawn.with_shell("/bin/lock")    end,
+              {description = "screen lock", group = "awesome"}),
+
 
     awful.key({ modkey, "Control" }, "n",
               function ()

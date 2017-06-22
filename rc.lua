@@ -65,6 +65,7 @@ run_once({ "nm-applet" })
 run_once({ "urxvtd", "unclutter -root" })
 --run_once({ "xautolock -time 5 -locker /bin/lock -notify 30 -notifier \"notify-send -u critical -t 10000 -- 'LOCKING screen in 30 seconds'\" " })
 run_once({ "xautolock -time 5 -locker /bin/lock" })
+run_once({ "guake" })
 
 -- {{{ Variable definitions
 --local chosen_theme = "blackburn"
@@ -102,11 +103,11 @@ local key_Brightness_Down = "#232"
 -- change laytout key
 local key_Tile_Next = "#128"
 local key_Tile_Prev = "#152"
-local key_Tile_Next_F11 = "#95"
-local key_Tile_Prev_F12 = "#96"
+local key_Tile_Prev_F11 = "#95"
+local key_Tile_Next_F12 = "#96"
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "1", "2", "3", "4", "5" }
+awful.util.tagnames = { "1:web", "2:note", "3:terminal", "4:messager", "5:other" }
 
 awful.layout.layouts = {
     awful.layout.suit.floating, --!
@@ -114,13 +115,13 @@ awful.layout.layouts = {
     awful.layout.suit.tile.left, 
     awful.layout.suit.tile.bottom, --!
     awful.layout.suit.tile.top, --!
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
+    --awful.layout.suit.fair,
+    --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,  ---
     --awful.layout.suit.spiral.dwindle,---
-    --awful.layout.suit.max, ---
-    --awful.layout.suit.max.fullscreen, ---
-    --awful.layout.suit.magnifier,  ---
+    awful.layout.suit.max, ---
+    awful.layout.suit.max.fullscreen, ---
+    awful.layout.suit.magnifier,  ---
     awful.layout.suit.corner.nw,     --!
     --awful.layout.suit.corner.ne,  ---
     --awful.layout.suit.corner.sw,  ---
@@ -383,15 +384,18 @@ globalkeys = awful.util.table.join(
     ----------------------------
     -- change layout Keyboard --
     ----------------------------
-    awful.key({ modkey }, key_Tile_Next_F11, function () awful.layout.inc( 1)                end,
+    awful.key({ modkey }, key_Tile_Next_F12, function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey }, key_Tile_Prev_F12, function () awful.layout.inc(-1)                end,
+    awful.key({ modkey }, key_Tile_Prev_F11, function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
 
     -----------------
     -- screen lock --
     -----------------
     awful.key({ altkey, "Control" }, "l", function () awful.spawn.with_shell("/bin/lock")    end,
+              {description = "screen lock", group = "awesome"}),
+
+    awful.key({ altkey, }, Escape, function () awful.spawn.with_shell("/bin/lock")    end,
               {description = "screen lock", group = "awesome"}),
 
 
@@ -499,23 +503,32 @@ globalkeys = awful.util.table.join(
     -- Brightness --
     awful.key({ modkey }, "F5",
         function ()
-            awful.util.spawn("xbacklight -dec 10")
+            awful.util.spawn("xbacklight -dec 5")
         end),
     awful.key({ modkey }, "F6",
         function ()
-            awful.util.spawn("xbacklight -inc 10")
+            awful.util.spawn("xbacklight -inc 5")
         end),
+
     --------------------------------
     -- Brightness for notebook FN --
     --------------------------------
     awful.key({  }, key_Brightness_Down,
         function ()
-            awful.util.spawn("xbacklight -dec 10")
+            awful.util.spawn("xbacklight -dec 5")
         end),
     awful.key({  }, key_Brightness_Up,
         function ()
-            awful.util.spawn("xbacklight -inc 10")
+            awful.util.spawn("xbacklight -inc 5")
         end),
+
+    --------------------------------
+    -- Brightness for notebook FN --
+    --------------------------------
+    --awful.key({ altkey }, key_Brightness_Up,
+    --    function ()
+    --        awful.util.spawn("xbacklight -inc 5")
+    --    end),
 
     -- MPD control
     awful.key({ altkey, "Control" }, "Up",
@@ -702,11 +715,44 @@ awful.rules.rules = {
       properties = { titlebars_enabled = true } },
 
     -- Set Firefox to always map on the first tag on screen 1.
-    { rule = { class = "Firefox" },
-      properties = { screen = 1, tag = screen[1].tags[1] } },
+    -- OK
+    { rule = { role = "browser" },
+--      properties = { screen = 1, tag = screen[1].tags[1] } },
+      properties = { screen = 2 } },
+    -- OK
+    { rule = { name = "Guake!" },
+          properties = { floating = true, titlebars_enabled = false } },
+    -- OK
+    { rule = { class = "Comix" },
+          properties = { floating = true, titlebars_enabled = false, maximized = true } },
+    -- OK
+    { rule = { name = "KeePass" },
+          properties = { floating = true, titlebars_enabled = true, tag = "2:note", switchtotag = true } },
+    -- OK 
+    { rule = { class = "Skype", name = "Skype™ 4.3 for Linux" },
+    --{ rule = { class = "Skype", name = "*- Skype™" },
+          properties = { floating = false, titlebars_enabled = true,} },
+    { rule = { class = "Skype"},
+          properties = { floating = false, titlebars_enabled = true, tag = "4:messager", callback = awful.client.setsmaster } },
+    { rule = { class = "Skype", role = "ConversationsWindow" },
+          properties = { floating = false, titlebars_enabled = true, tag = "4:messager", callback = awful.client.setslave } },
+    { rule = { class = "Skype", name = "File Transfers" },
+          properties = { floating = true, titlebars_enabled = true, tag = "4:messager" } },
+    -- OK
+    { rule = { name = "YakYak", class = "yakyak" },
+          properties = { floating = false, titlebars_enabled = false, tag = "4:messager" } },
 
-    { rule = { class = "Gimp", role = "gimp-image-window" },
-          properties = { maximized = true } },
+    -- OK --ERROR
+    { rule = { class = "Pavucontrol" },
+        properties = { x = 600, y = 300, width = 750, height = 400,
+                       floating = true,
+                       titlebars_enabled = false,
+                       --tag = "5:other",
+                       --?border_width = 5,
+                       --?sticky = true,
+                       --size_hints_honor = false,
+                       switchtotag = true,
+                      } },
 }
 -- }}}
 

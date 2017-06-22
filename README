@@ -1,4 +1,5 @@
 #help
+xprop |grep "CLASS"  --> view name and class for rules
 xev          --> key code
 xmodmap -pke --> key code
 xmodmap      --> key code

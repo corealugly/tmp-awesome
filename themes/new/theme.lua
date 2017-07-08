@@ -11,6 +11,7 @@ local lain  = require("lain")
 local cau  = require("cau")
 local awful = require("awful")
 local wibox = require("wibox")
+local redflat = require("redflat")
 local os    = { getenv = os.getenv }
 
 local theme                                     = {}
@@ -38,18 +39,19 @@ theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.p
 theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
 theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
 
-theme.layout_floating                           = theme.dir .. "/icons/floating.png"
-theme.layout_tile                               = theme.dir .. "/icons/tile.png"
-theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
-theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
-theme.layout_tiletop                            = theme.dir .. "/icons/tiletop.png"
-theme.layout_fairv                              = theme.dir .. "/icons/fairv.png"
-theme.layout_fairh                              = theme.dir .. "/icons/fairh.png"
-theme.layout_spiral                             = theme.dir .. "/icons/spiral.png"
-theme.layout_dwindle                            = theme.dir .. "/icons/dwindle.png"
-theme.layout_max                                = theme.dir .. "/icons/max.png"
-theme.layout_fullscreen                         = theme.dir .. "/icons/fullscreen.png"
-theme.layout_magnifier                          = theme.dir .. "/icons/magnifier.png"
+theme.layout_floating                           = theme.dir .. "/icons/layout/floating.png"
+theme.layout_tile                               = theme.dir .. "/icons/layout/tile.png"
+theme.layout_tileleft                           = theme.dir .. "/icons/layout/tileleft.png"
+theme.layout_tilebottom                         = theme.dir .. "/icons/layout/tilebottom.png"
+theme.layout_tiletop                            = theme.dir .. "/icons/layout/tiletop.png"
+theme.layout_fairv                              = theme.dir .. "/icons/layout/fairv.png"
+theme.layout_fairh                              = theme.dir .. "/icons/layout/fairh.png"
+theme.layout_spiral                             = theme.dir .. "/icons/layout/spiral.png"
+theme.layout_dwindle                            = theme.dir .. "/icons/layout/dwindle.png"
+theme.layout_max                                = theme.dir .. "/icons/layout/max.png"
+theme.layout_fullscreen                         = theme.dir .. "/icons/layout/fullscreen.png"
+theme.layout_magnifier                          = theme.dir .. "/icons/layout/magnifier.png"
+theme.layout_cornernw                           = theme.dir .. "/icons/layout/cornernw.svg"
 
 theme.widget_ac                                 = theme.dir .. "/icons/ac.png"
 theme.widget_battery                            = theme.dir .. "/icons/battery.png"
@@ -172,6 +174,10 @@ local cpu = lain.widget.cpu({
     end
 })
 
+cpu.widget:buttons(awful.util.table.join(
+        awful.button({ }, 1, function() redflat.float.top:show("cpu") end)
+))
+
 -- Coretemp
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 local temp = lain.widget.temp({
@@ -214,7 +220,9 @@ local bat = lain.widget.bat({
     end
 })
 
--- keyboard layout
+---------------------
+-- keyboard layout --
+---------------------
 kbdwidget = wibox.widget.textbox()
 kbdwidget:set_markup(markup.font(theme.font," ENG "))
 
@@ -228,7 +236,9 @@ dbus.connect_signal("ru.gentoo.kbdd", function(...)
     end
 )
 
--- pulse volume widget
+-------------------------
+-- pulse volume widget --
+-------------------------
 local volicon = wibox.widget.imagebox(theme.widget_vol)
 theme.volume = cau.widget.pulseaudio({
     settings = function()
@@ -251,7 +261,9 @@ theme.volume = cau.widget.pulseaudio({
     end
 })
 
--- PulseAudio volume control button
+--------------------------------------
+-- PulseAudio volume control button --
+--------------------------------------
 theme.volume.widget:buttons(awful.util.table.join(
     awful.button({}, 1, function() -- left click
         awful.spawn("pavucontrol")
@@ -285,7 +297,9 @@ local net = lain.widget.net({
     end
 })
 
--- Separators
+----------------
+-- Separators --
+----------------
 local spr     = wibox.widget.textbox(' ')
 local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
 local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)

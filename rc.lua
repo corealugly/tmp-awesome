@@ -717,31 +717,61 @@ awful.rules.rules = {
     -- Set Firefox to always map on the first tag on screen 1.
     -- OK
     { rule = { role = "browser" },
---      properties = { screen = 1, tag = screen[1].tags[1] } },
-      properties = { screen = 2 } },
+      properties = { screen = 1, tag = screen[1].tags[1] } },
+      --properties = { screen = 2 } },
     -- OK
     { rule = { name = "Guake!" },
           properties = { floating = true, titlebars_enabled = false } },
     -- OK
     { rule = { class = "Comix" },
           properties = { floating = true, titlebars_enabled = false, maximized = true } },
-    -- OK
-    { rule = { name = "KeePass" },
-          properties = { floating = true, titlebars_enabled = true, tag = "2:note", switchtotag = true } },
+    -- OK --ERROR
+    --{ rule = { name = "KeePass2" },
+    --      properties = { floating = true, titlebars_enabled = true, tag = "2:note", switchtotag = true } },
+    {rule = { class = "KeePass2" },
+          properties = { --x = 600, y = 300,-- width = 750, height = 400,
+                         floating = true,
+                         titlebars_enabled = true,
+                         tag = "2:note",
+                         switchtotag = true },
+           callback = function (c)
+                  awful.placement.centered(c, nil) 
+           end
+     },
+
     -- OK 
     { rule = { class = "Skype", name = "Skype™ 4.3 for Linux" },
     --{ rule = { class = "Skype", name = "*- Skype™" },
-          properties = { floating = false, titlebars_enabled = true,} },
-    { rule = { class = "Skype"},
+          properties = { x = 600,
+                         y = 300,
+                         floating = false,
+                         titlebars_enabled = true,
+                         tag = "4:messager",
+                       },
+          callback = function (c)
+                  --awful.client.movetotag(tags[mouse.screen][awful.tag.getidx()], c)
+                  awful.placement.centered(c, nil) 
+          end
+    },
+    { rule = { name = "garden_of_sinners - Skype™", class = "Skype"},
           properties = { floating = false, titlebars_enabled = true, tag = "4:messager", callback = awful.client.setsmaster } },
     { rule = { class = "Skype", role = "ConversationsWindow" },
           properties = { floating = false, titlebars_enabled = true, tag = "4:messager", callback = awful.client.setslave } },
     { rule = { class = "Skype", name = "File Transfers" },
           properties = { floating = true, titlebars_enabled = true, tag = "4:messager" } },
+
+    { rule = { class = "Skype", name = "Leave this group" },
+          properties = { floating = true, titlebars_enabled = true, tag = "4:messager" } },
+
     -- OK
     { rule = { name = "YakYak", class = "yakyak" },
           properties = { floating = false, titlebars_enabled = false, tag = "4:messager" } },
-
+    -- OK
+    { rule = { name = "Gnote", class = "Gnote" },
+          properties = { floating = false, titlebars_enabled = false, tag = "2:note" } },
+    -- OK
+    { rule = { class = "Pcmanfm" },
+          properties = { floating = false, titlebars_enabled = false, tag = "5:other" } },
     -- OK --ERROR
     { rule = { class = "Pavucontrol" },
         properties = { x = 600, y = 300, width = 750, height = 400,
